@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HackHub · Campus Hackathons</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="navbar">
+    <div class="logo"><i class="fas fa-code"></i> Hack<span>Hub</span></div>
+    <div class="role-switch">
+      <button id="studentViewBtn" class="role-btn active"><i class="fas fa-user-graduate"></i> Student</button>
+      <button id="adminViewBtn" class="role-btn"><i class="fas fa-user-cog"></i> Admin</button>
+      <button id="logoutBtn" class="role-btn hidden"><i class="fas fa-sign-out-alt"></i> Logout</button>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- STUDENT -->
+    <section id="studentSection">
+      <div class="card-panel">
+        <div class="section-title"><i class="fas fa-calendar-alt" style="color:#4facfe;"></i> Upcoming Hackathons & Events</div>
+        <div class="section-sub">Filter by your department — see what's happening on campus.</div>
+        <div class="filter-bar">
+          <span class="filter-label"><i class="fas fa-filter"></i> Department:</span>
+          <select id="deptFilter" class="dept-select">
+            <option value="all">All departments</option>
+            <option value="CSE">Computer Science (CSE)</option>
+            <option value="IT">Information Technology (IT)</option>
+            <option value="ECE">Electronics (ECE)</option>
+            <option value="EEE">Electrical (EEE)</option>
+            <option value="MECH">Mechanical (MECH)</option>
+            <option value="CIVIL">Civil (CIVIL)</option>
+            <option value="AI">AI & DS</option>
+          </select>
+        </div>
+        <div id="studentEventGrid" class="event-grid"></div>
+        <div id="studentEmptyMessage" class="empty-message hidden">
+          <i class="fas fa-calendar-times"></i> No events found for this department.
+        </div>
+      </div>
+    </section>
+
+    <!-- LOGIN -->
+    <section id="loginSection" class="hidden">
+      <div class="card-panel login-card">
+        <div class="section-title"><i class="fas fa-lock" style="color:#4facfe;"></i> Admin Login</div>
+        <form id="loginForm" class="login-form">
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="loginEmail" placeholder="admin@college.edu" required>
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="loginPassword" placeholder="••••••••" required>
+          </div>
+          <button type="submit" class="btn-primary"><i class="fas fa-sign-in-alt"></i> Login</button>
+          <p id="loginError" class="error-text hidden"></p>
+        </form>
+      </div>
+    </section>
+
+    <!-- ADMIN -->
+    <section id="adminSection" class="hidden">
+      <div class="card-panel">
+        <div class="admin-header">
+          <div>
+            <div class="section-title"><i class="fas fa-user-shield" style="color:#4facfe;"></i> Admin Dashboard</div>
+            <div class="section-sub" style="margin-bottom:0;">Manage events</div>
+          </div>
+          <div class="admin-badge"><i class="fas fa-check-circle"></i> <span id="adminName">Admin</span></div>
+        </div>
+        <form id="addEventForm" class="admin-form">
+          <div class="form-group">
+            <label>Event name</label>
+            <input type="text" id="eventNameInput" placeholder="e.g. CodeSprint 2025" required>
+          </div>
+          <div class="form-group">
+            <label>Department</label>
+            <select id="eventDeptInput" required>
+              <option value="CSE">CSE</option>
+              <option value="IT">IT</option>
+              <option value="ECE">ECE</option>
+              <option value="EEE">EEE</option>
+              <option value="MECH">MECH</option>
+              <option value="CIVIL">CIVIL</option>
+              <option value="AI">AI & DS</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Event link</label>
+            <input type="url" id="eventLinkInput" placeholder="https://..." required>
+          </div>
+          <button type="submit" class="btn-primary"><i class="fas fa-plus-circle"></i> Add event</button>
+        </form>
+        <table class="event-table">
+          <thead>
+            <tr><th>Event</th><th>Department</th><th>Link</th><th>Action</th></tr>
+          </thead>
+          <tbody id="adminEventTableBody"></tbody>
+        </table>
+        <div id="adminEmptyMessage" class="empty-message hidden" style="margin-top:20px;">
+          <i class="fas fa-inbox"></i> No events added yet.
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <footer class="footer"><i class="fas fa-rocket"></i> HackHub — connect students with campus hackathons</footer>
+  <script src="app.js"></script>
+</body>
+</html>
