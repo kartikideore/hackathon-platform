@@ -1,4 +1,4 @@
-const API_BASE = 'http://localhost:5000';
+const API_BASE = window.location.origin;
 
 let authToken = localStorage.getItem('hackhub_token') || null;
 let currentAdmin = JSON.parse(localStorage.getItem('hackhub_admin') || 'null');
