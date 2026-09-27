@@ -7,17 +7,17 @@ So I made a small website where all the events are in one place and you can
 just pick your department and see what's happening.
  What it does
 There are basically two sides to it:
-For students — you open the site, pick your department from the dropdown, 
+For students-you open the site, pick your department from the dropdown, 
 and you see a list of hackathons and events. Each one has a button that takes 
 you straight to the registration page. No more scrolling through old messages.
-For admins — the college admin can log in with a password, and then they 
+For admins-the college admin can log in with a password, and then they 
 can add new events or remove old ones. Just paste the name, pick the 
 department, and paste the link. Done.
 That's it. Simple.
  Live link
 You can actually use it here:
 https://hackathon-platform-3ggx.onrender.com
-Fair warning — if nobody has opened it in the last 15 minutes, it takes 
+Fair warning-if nobody has opened it in the last 15 minutes, it takes 
 around 30 seconds to wake up. That's a free tier thing, nothing I can do 
 about it right now.
 How I built it
