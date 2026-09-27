@@ -56,7 +56,7 @@ Then open http://localhost:5000
  Logging in
 Default admin account:
     email:    admin@college.edu
-    password: admin123
+    password: StrongPass123!
 You can change these in the `.env` file, or if it's already deployed, 
 in the Render environment variables.
  Some things I want to add later
