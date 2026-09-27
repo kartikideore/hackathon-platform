@@ -31,7 +31,7 @@ def seed_admin():
 
 seed_admin()
 
-app = FastAPI(title="HackHub API", version="1.0.0")
+app = FastAPI(title="HackTrack API", version="1.0.0")
 
 app.add_middleware(
     CORSMiddleware,
