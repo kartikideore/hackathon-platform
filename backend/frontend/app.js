@@ -121,8 +121,8 @@ loginForm.addEventListener('submit', async (e) => {
     });
     authToken = data.token;
     currentAdmin = data.admin;
-    localStorage.setItem('hackhub_token', authToken);
-    localStorage.setItem('hackhub_admin', JSON.stringify(currentAdmin));
+    localStorage.setItem('hackTrack_token', authToken);
+    localStorage.setItem('hackTrack_admin', JSON.stringify(currentAdmin));
     loginForm.reset();
     showAdminPanel();
     showToast(`Welcome, ${currentAdmin.name}!`, 'success');
@@ -212,8 +212,8 @@ addEventForm.addEventListener('submit', async (e) => {
 logoutBtn.addEventListener('click', () => {
   authToken = null;
   currentAdmin = null;
-  localStorage.removeItem('hackhub_token');
-  localStorage.removeItem('hackhub_admin');
+  localStorage.removeItem('hackTrack_token');
+  localStorage.removeItem('hackTrack_admin');
   logoutBtn.classList.add('hidden');
   setActiveRole('student');
   showToast('Logged out', 'success');
