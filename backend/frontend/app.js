@@ -16,6 +16,7 @@ const studentEmptyMessage = document.getElementById('studentEmptyMessage');
 const loginForm = document.getElementById('loginForm');
 const loginEmail = document.getElementById('loginEmail');
 const loginPassword = document.getElementById('loginPassword');
+const togglePassword = document.getElementById('togglePassword');
 const loginError = document.getElementById('loginError');
 const addEventForm = document.getElementById('addEventForm');
 const eventNameInput = document.getElementById('eventNameInput');
