@@ -190,8 +190,35 @@ addEventForm.addEventListener('submit', async (e) => {
   const payload = {
     name: eventNameInput.value.trim(),
     department: eventDeptInput.value,
-    link: eventLinkInput.value.trim()
+    mode: document.getElementById('eventModeInput').value,
+    link: eventLinkInput.value.trim(),
+    prize: document.getElementById('eventPrizeInput').value.trim() || null,
+    event_date: document.getElementById('eventDateInput').value.trim() || null,
+    registration_deadline: document.getElementById('eventDeadlineInput').value.trim() || null,
+    team_size: document.getElementById('eventTeamInput').value.trim() || null,
+    venue: document.getElementById('eventVenueInput').value.trim() || null,
+    organizer: document.getElementById('eventOrganizerInput').value.trim() || null,
+    description: document.getElementById('eventDescInput').value.trim() || null,
   };
+  if (!payload.name || !payload.department || !payload.link) {
+    showToast('Name, department, and link are required', 'error');
+    return;
+  }
+  if (!payload.link.startsWith('http://') && !payload.link.startsWith('https://')) {
+    showToast('Link must start with http:// or https://', 'error');
+    return;
+  }
+  try {
+    await apiFetch('/api/admin/events', {
+      method: 'POST',
+      headers: authHeaders(),
+      body: JSON.stringify(payload)
+    });
+    addEventForm.reset();
+    showToast('Event added!', 'success');
+    loadAdminEvents();
+  } catch (err) { showToast(err.message, 'error'); }
+});
   if (!payload.name || !payload.department || !payload.link) {
     showToast('All fields are required', 'error'); return;
   }
