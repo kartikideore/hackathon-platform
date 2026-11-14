@@ -87,3 +87,83 @@ body { background:#f4f7fc; display:flex; flex-direction:column; min-height:100vh
 .toggle-password:focus {
   outline: none;
 }
+/* Full admin form for detailed events */
+.admin-form-full {
+  background: #f9fcff;
+  padding: 1.5rem;
+  border-radius: 20px;
+  margin-bottom: 32px;
+  border: 1px solid #dae8f5;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+}
+
+.form-row .full-width {
+  grid-column: 1 / -1;
+}
+
+.form-group textarea {
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid #cfddee;
+  font-size: .95rem;
+  outline: none;
+  resize: vertical;
+  font-family: inherit;
+  width: 100%;
+}
+
+.form-group textarea:focus {
+  border-color: #4facfe;
+}
+
+@media (max-width: 900px) {
+  .form-row { grid-template-columns: 1fr; }
+}
+
+/* Event card extras */
+.event-extra-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 10px 0;
+}
+
+.info-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #f1f5f9;
+  color: #334155;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+.info-chip i { color: #4facfe; font-size: 0.7rem; }
+
+.event-prize {
+  display: inline-block;
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  color: #92400e;
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 6px 14px;
+  border-radius: 20px;
+  margin: 8px 0;
+}
+
+.event-description {
+  color: #475569;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  margin: 8px 0;
+}
