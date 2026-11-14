@@ -11,10 +11,11 @@
   <header class="navbar">
     <div class="logo"><i class="fas fa-code"></i> Hack<span>Track</span></div>
     <div class="role-switch">
-      <button id="studentViewBtn" class="role-btn active"><i class="fas fa-user-graduate"></i> Student</button>
-      <button id="adminViewBtn" class="role-btn"><i class="fas fa-user-cog"></i> Admin</button>
-      <button id="logoutBtn" class="role-btn hidden"><i class="fas fa-sign-out-alt"></i> Logout</button>
-    </div>
+  <button id="studentViewBtn" class="role-btn active"><i class="fas fa-calendar"></i> Events</button>
+  <button id="projectsViewBtn" class="role-btn"><i class="fas fa-folder"></i> Projects</button>
+  <button id="adminViewBtn" class="role-btn"><i class="fas fa-user-cog"></i> Admin</button>
+  <button id="logoutBtn" class="role-btn hidden"><i class="fas fa-sign-out-alt"></i> Logout</button>
+</div>
   </header>
 
   <div class="container">
@@ -42,6 +43,148 @@
         </div>
       </div>
     </section>
+    <!-- PROJECTS SECTION -->
+<section id="projectsSection" class="hidden">
+  <div class="card-panel">
+    <div class="section-title"><i class="fas fa-folder-open" style="color:#4facfe;"></i> Student Projects — Find Contributors</div>
+    <div class="section-sub">Browse unfinished projects. Request to join and help complete them.</div>
+
+    <div class="filter-bar">
+      <span class="filter-label"><i class="fas fa-filter"></i> Department:</span>
+      <select id="projectDeptFilter" class="dept-select">
+        <option value="all">All departments</option>
+        <option value="CSE">Computer Science (CSE)</option>
+        <option value="IT">Information Technology (IT)</option>
+        <option value="ECE">Electronics (ECE)</option>
+        <option value="EEE">Electrical (EEE)</option>
+        <option value="MECH">Mechanical (MECH)</option>
+        <option value="CIVIL">Civil (CIVIL)</option>
+        <option value="AI">AI & DS</option>
+      </select>
+      <button id="openPostProjectBtn" class="btn-primary" style="margin-left:auto;">
+        <i class="fas fa-plus-circle"></i> Post a Project
+      </button>
+    </div>
+
+    <div id="projectsGrid" class="event-grid"></div>
+    <div id="projectsEmptyMessage" class="empty-message hidden">
+      <i class="fas fa-folder-open"></i> No approved projects yet. Post your own!
+    </div>
+  </div>
+</section>
+
+<!-- POST PROJECT MODAL (form appears here) -->
+<div id="postProjectModal" class="modal hidden">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2><i class="fas fa-plus-circle" style="color:#4facfe;"></i> Post Your Project</h2>
+      <button id="closePostModal" class="modal-close"><i class="fas fa-times"></i></button>
+    </div>
+    <form id="postProjectForm" class="modal-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Project title *</label>
+          <input type="text" id="projTitle" placeholder="e.g. Campus Lost & Found" required>
+        </div>
+        <div class="form-group">
+          <label>Your name *</label>
+          <input type="text" id="projOwnerName" placeholder="Your full name" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Your email *</label>
+          <input type="email" id="projOwnerEmail" placeholder="you@college.edu" required>
+        </div>
+        <div class="form-group">
+          <label>Team name</label>
+          <input type="text" id="projTeamName" placeholder="e.g. Code Warriors">
+        </div>
+        <div class="form-group">
+          <label>Department *</label>
+          <select id="projDept" required>
+            <option value="CSE">CSE</option>
+            <option value="IT">IT</option>
+            <option value="ECE">ECE</option>
+            <option value="EEE">EEE</option>
+            <option value="MECH">MECH</option>
+            <option value="CIVIL">CIVIL</option>
+            <option value="AI">AI & DS</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group full-width">
+          <label>GitHub Repository Link *</label>
+          <input type="url" id="projGithub" placeholder="https://github.com/username/repo" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group full-width">
+          <label>Tech Stack</label>
+          <input type="text" id="projTech" placeholder="e.g. Python, React, PostgreSQL">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>What's done?</label>
+          <textarea id="projDone" rows="3" placeholder="e.g. User login, database schema, basic UI"></textarea>
+        </div>
+        <div class="form-group">
+          <label>What's left?</label>
+          <textarea id="projLeft" rows="3" placeholder="e.g. Payment integration, deployment, testing"></textarea>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Roles needed</label>
+          <textarea id="projRoles" rows="2" placeholder="e.g. Frontend developer, UI designer, ML engineer"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Progress (%)</label>
+          <input type="number" id="projProgress" min="0" max="100" value="50">
+        </div>
+      </div>
+      <button type="submit" class="btn-primary"><i class="fas fa-paper-plane"></i> Submit for Approval</button>
+      <p style="font-size:0.85rem;color:#64748b;margin-top:10px;">
+        <i class="fas fa-info-circle"></i> Your project will be reviewed by the admin before appearing on the site.
+      </p>
+    </form>
+  </div>
+</div>
+
+<!-- REQUEST ACCESS MODAL -->
+<div id="requestModal" class="modal hidden">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2><i class="fas fa-hand-paper" style="color:#4facfe;"></i> Request to Join</h2>
+      <button id="closeRequestModal" class="modal-close"><i class="fas fa-times"></i></button>
+    </div>
+    <form id="requestForm" class="modal-form">
+      <input type="hidden" id="reqProjectId">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Your name *</label>
+          <input type="text" id="reqName" placeholder="Your name" required>
+        </div>
+        <div class="form-group">
+          <label>Your email *</label>
+          <input type="email" id="reqEmail" placeholder="you@college.edu" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group full-width">
+          <label>Why do you want to join? *</label>
+          <textarea id="reqMessage" rows="4" placeholder="What skills will you bring? How will you contribute?" required></textarea>
+        </div>
+      </div>
+      <button type="submit" class="btn-primary"><i class="fas fa-paper-plane"></i> Send Request</button>
+      <p style="font-size:0.85rem;color:#64748b;margin-top:10px;">
+        <i class="fas fa-info-circle"></i> Your request will be sent to the project owner for review.
+      </p>
+    </form>
+  </div>
+</div>
 
     <!-- LOGIN -->
     <section id="loginSection" class="hidden">
