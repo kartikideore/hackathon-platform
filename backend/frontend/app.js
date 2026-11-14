@@ -26,6 +26,12 @@ const adminEventTableBody = document.getElementById('adminEventTableBody');
 const adminEmptyMessage = document.getElementById('adminEmptyMessage');
 const adminNameSpan = document.getElementById('adminName');
 
+const deptNames = {
+  CSE: 'Computer Science', IT: 'Information Tech', ECE: 'Electronics',
+  EEE: 'Electrical', MECH: 'Mechanical', CIVIL: 'Civil', AI: 'AI & Data Science'
+};
+
+// ---------------- Utilities ----------------
 function escapeHtml(text) {
   if (!text) return '';
   return String(text).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
@@ -55,6 +61,7 @@ async function apiFetch(path, options={}) {
   return data;
 }
 
+// ---------------- Role switching ----------------
 function setActiveRole(role) {
   studentViewBtn.classList.remove('active');
   adminViewBtn.classList.remove('active');
@@ -76,6 +83,7 @@ function setActiveRole(role) {
 studentViewBtn.addEventListener('click', () => setActiveRole('student'));
 adminViewBtn.addEventListener('click', () => setActiveRole('admin'));
 
+// ---------------- STUDENT VIEW ----------------
 async function loadStudentEvents() {
   const dept = deptFilter.value;
   try {
@@ -85,50 +93,51 @@ async function loadStudentEvents() {
   } catch (err) { showToast(err.message, 'error'); }
 }
 
-studentEventGrid.innerHTML = filtered.map(ev => {
-  const modeIcon = ev.mode === 'Online' ? 'globe' : ev.mode === 'Offline' ? 'map-marker-alt' : 'wifi';
-  const modeLabel = ev.mode || 'N/A';
-  const prizeBadge = ev.prize ? `<div class="event-prize">🏆 ${escapeHtml(ev.prize)}</div>` : '';
-  const description = ev.description ? `<div class="event-description">${escapeHtml(ev.description)}</div>` : '';
-  
-  const chips = [
-    ev.mode ? `<span class="info-chip"><i class="fas fa-${modeIcon}"></i> ${escapeHtml(modeLabel)}</span>` : '',
-    ev.event_date ? `<span class="info-chip"><i class="fas fa-calendar"></i> ${escapeHtml(ev.event_date)}</span>` : '',
-    ev.registration_deadline ? `<span class="info-chip"><i class="fas fa-hourglass-end"></i> ${escapeHtml(ev.registration_deadline)}</span>` : '',
-    ev.team_size ? `<span class="info-chip"><i class="fas fa-users"></i> ${escapeHtml(ev.team_size)}</span>` : '',
-    ev.venue ? `<span class="info-chip"><i class="fas fa-map-pin"></i> ${escapeHtml(ev.venue)}</span>` : '',
-    ev.organizer ? `<span class="info-chip"><i class="fas fa-building"></i> ${escapeHtml(ev.organizer)}</span>` : '',
-  ].filter(Boolean).join('');
+function renderStudentEvents() {
+  const dept = deptFilter.value;
+  let filtered = events;
+  if (dept !== 'all') filtered = events.filter(e => e.department === dept);
 
-  return `
-    <div class="event-card">
-      <span class="event-badge"><i class="fas fa-${getDeptIcon(ev.department)}"></i> ${escapeHtml(ev.department)} · ${deptNames[ev.department]||ev.department}</span>
-      <div class="event-name">${escapeHtml(ev.name)}</div>
-      ${prizeBadge}
-      ${description}
-      ${chips ? `<div class="event-extra-info">${chips}</div>` : ''}
-      <a href="${escapeHtml(ev.link)}" target="_blank" rel="noopener noreferrer" class="event-link-btn">
-        <i class="fas fa-external-link-alt"></i> Register Now
-      </a>
-    </div>
-  `;
-}).join('');
+  if (filtered.length === 0) {
+    studentEventGrid.innerHTML = '';
+    studentEmptyMessage.classList.remove('hidden');
+    return;
+  }
   studentEmptyMessage.classList.add('hidden');
 
-  const deptNames = { CSE:'Computer Science', IT:'Information Tech', ECE:'Electronics', EEE:'Electrical', MECH:'Mechanical', CIVIL:'Civil', AI:'AI & Data Science' };
+  studentEventGrid.innerHTML = filtered.map(ev => {
+    const modeIcon = ev.mode === 'Online' ? 'globe' : ev.mode === 'Offline' ? 'map-marker-alt' : 'wifi';
+    const modeLabel = ev.mode || 'N/A';
+    const prizeBadge = ev.prize ? `<div class="event-prize">🏆 ${escapeHtml(ev.prize)}</div>` : '';
+    const description = ev.description ? `<div class="event-description">${escapeHtml(ev.description)}</div>` : '';
 
-  studentEventGrid.innerHTML = filtered.map(ev => `
-    <div class="event-card">
-      <span class="event-badge"><i class="fas fa-${getDeptIcon(ev.department)}"></i> ${escapeHtml(ev.department)} · ${deptNames[ev.department]||ev.department}</span>
-      <div class="event-name">${escapeHtml(ev.name)}</div>
-      <div class="event-meta"><i class="fas fa-link"></i> <span>${escapeHtml(ev.link.substring(0,40))}${ev.link.length>40?'…':''}</span></div>
-      <a href="${escapeHtml(ev.link)}" target="_blank" rel="noopener noreferrer" class="event-link-btn"><i class="fas fa-external-link-alt"></i> Go to event</a>
-    </div>
-  `).join('');
+    const chips = [
+      ev.mode ? `<span class="info-chip"><i class="fas fa-${modeIcon}"></i> ${escapeHtml(modeLabel)}</span>` : '',
+      ev.event_date ? `<span class="info-chip"><i class="fas fa-calendar"></i> ${escapeHtml(ev.event_date)}</span>` : '',
+      ev.registration_deadline ? `<span class="info-chip"><i class="fas fa-hourglass-end"></i> ${escapeHtml(ev.registration_deadline)}</span>` : '',
+      ev.team_size ? `<span class="info-chip"><i class="fas fa-users"></i> ${escapeHtml(ev.team_size)}</span>` : '',
+      ev.venue ? `<span class="info-chip"><i class="fas fa-map-pin"></i> ${escapeHtml(ev.venue)}</span>` : '',
+      ev.organizer ? `<span class="info-chip"><i class="fas fa-building"></i> ${escapeHtml(ev.organizer)}</span>` : '',
+    ].filter(Boolean).join('');
+
+    return `
+      <div class="event-card">
+        <span class="event-badge"><i class="fas fa-${getDeptIcon(ev.department)}"></i> ${escapeHtml(ev.department)} · ${deptNames[ev.department]||ev.department}</span>
+        <div class="event-name">${escapeHtml(ev.name)}</div>
+        ${prizeBadge}
+        ${description}
+        ${chips ? `<div class="event-extra-info">${chips}</div>` : ''}
+        <a href="${escapeHtml(ev.link)}" target="_blank" rel="noopener noreferrer" class="event-link-btn">
+          <i class="fas fa-external-link-alt"></i> Register Now
+        </a>
+      </div>
+    `;
+  }).join('');
 }
 
 deptFilter.addEventListener('change', loadStudentEvents);
 
+// ---------------- LOGIN ----------------
 loginForm.addEventListener('submit', async (e) => {
   e.preventDefault();
   loginError.classList.add('hidden');
@@ -151,6 +160,7 @@ loginForm.addEventListener('submit', async (e) => {
   }
 });
 
+// ---------------- ADMIN ----------------
 function showAdminPanel() {
   adminSection.classList.remove('hidden');
   loginSection.classList.add('hidden');
@@ -185,8 +195,12 @@ function renderAdminEvents() {
     <tr>
       <td style="font-weight:500;">${escapeHtml(ev.name)}</td>
       <td><span style="background:#e7f0ff;padding:5px 10px;border-radius:40px;font-size:.8rem;font-weight:600;">${escapeHtml(ev.department)}</span></td>
-      <td><a href="${escapeHtml(ev.link)}" target="_blank" class="link-preview"><i class="fas fa-external-link-alt"></i> ${escapeHtml(ev.link.length > 35 ? ev.link.substring(0, 35) + '…' : ev.link)}</a></td>
-      <td><button class="delete-btn" data-id="${ev.id}" title="Delete event"><i class="fas fa-trash-alt"></i></button></td>
+      <td>${escapeHtml(ev.mode || '—')}</td>
+      <td>${ev.prize ? `<strong style="color:#92400e;">${escapeHtml(ev.prize)}</strong>` : '—'}</td>
+      <td>${escapeHtml(ev.event_date || '—')}</td>
+      <td>${escapeHtml(ev.registration_deadline || '—')}</td>
+      <td><a href="${escapeHtml(ev.link)}" target="_blank" class="link-preview"><i class="fas fa-external-link-alt"></i> Link</a></td>
+      <td><button class="delete-btn" data-id="${ev.id}"><i class="fas fa-trash-alt"></i></button></td>
     </tr>
   `).join('');
 
@@ -203,6 +217,7 @@ function renderAdminEvents() {
   });
 }
 
+// ---------------- ADD EVENT FORM ----------------
 addEventForm.addEventListener('submit', async (e) => {
   e.preventDefault();
   const payload = {
@@ -237,24 +252,8 @@ addEventForm.addEventListener('submit', async (e) => {
     loadAdminEvents();
   } catch (err) { showToast(err.message, 'error'); }
 });
-  if (!payload.name || !payload.department || !payload.link) {
-    showToast('All fields are required', 'error'); return;
-  }
-  if (!payload.link.startsWith('http://') && !payload.link.startsWith('https://')) {
-    showToast('URL must start with http:// or https://', 'error'); return;
-  }
-  try {
-    await apiFetch('/api/admin/events', {
-      method:'POST',
-      headers: authHeaders(),
-      body: JSON.stringify(payload)
-    });
-    addEventForm.reset();
-    showToast('Event added!', 'success');
-    loadAdminEvents();
-  } catch (err) { showToast(err.message, 'error'); }
-});
 
+// ---------------- LOGOUT ----------------
 logoutBtn.addEventListener('click', () => {
   authToken = null;
   currentAdmin = null;
@@ -265,4 +264,21 @@ logoutBtn.addEventListener('click', () => {
   showToast('Logged out', 'success');
 });
 
+// ---------------- PASSWORD TOGGLE ----------------
+if (togglePassword) {
+  togglePassword.addEventListener('click', () => {
+    const isHidden = loginPassword.type === 'password';
+    loginPassword.type = isHidden ? 'text' : 'password';
+    const icon = togglePassword.querySelector('i');
+    if (isHidden) {
+      icon.classList.remove('fa-eye');
+      icon.classList.add('fa-eye-slash');
+    } else {
+      icon.classList.remove('fa-eye-slash');
+      icon.classList.add('fa-eye');
+    }
+  });
+}
+
+// ---------------- INIT ----------------
 setActiveRole('student');
