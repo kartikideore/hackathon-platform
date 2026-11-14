@@ -70,9 +70,20 @@ def me(current: Admin = Depends(get_current_admin)):
 @app.post("/api/admin/events", response_model=EventOut, status_code=201)
 def create_event(payload: EventCreate, db: Session = Depends(get_db),
                  current: Admin = Depends(get_current_admin)):
-    event = Event(name=payload.name, department=payload.department,
-                  link=payload.link, description=payload.description,
-                  event_date=payload.event_date, created_by=current.id)
+    event = Event(
+        name=payload.name,
+        department=payload.department,
+        link=payload.link,
+        description=payload.description,
+        event_date=payload.event_date,
+        prize=payload.prize,
+        mode=payload.mode,
+        venue=payload.venue,
+        registration_deadline=payload.registration_deadline,
+        team_size=payload.team_size,
+        organizer=payload.organizer,
+        created_by=current.id,
+    )
     db.add(event)
     db.commit()
     db.refresh(event)
