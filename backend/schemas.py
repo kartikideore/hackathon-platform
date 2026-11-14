@@ -29,6 +29,43 @@ class EventBase(BaseModel):
     registration_deadline: Optional[str] = None
     team_size: Optional[str] = None
     organizer: Optional[str] = None
+class ProjectCreate(BaseModel):
+    title: str
+    owner_name: str
+    owner_email: EmailStr
+    team_name: Optional[str] = None
+    github_link: str
+    department: str
+    tech_stack: Optional[str] = None
+    what_done: Optional[str] = None
+    what_left: Optional[str] = None
+    roles_needed: Optional[str] = None
+    progress: Optional[int] = 0
+
+
+class ProjectOut(ProjectCreate):
+    id: int
+    status: str
+    created_at: Optional[datetime] = None
+
+    class Config:
+        from_attributes = True
+
+
+class ProjectRequestCreate(BaseModel):
+    project_id: int
+    requester_name: str
+    requester_email: EmailStr
+    message: Optional[str] = None
+
+
+class ProjectRequestOut(ProjectRequestCreate):
+    id: int
+    status: str
+    created_at: Optional[datetime] = None
+
+    class Config:
+        from_attributes = True
 
 class EventCreate(EventBase):
     pass
