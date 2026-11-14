@@ -85,16 +85,34 @@ async function loadStudentEvents() {
   } catch (err) { showToast(err.message, 'error'); }
 }
 
-function renderStudentEvents() {
-  const dept = deptFilter.value;
-  let filtered = events;
-  if (dept !== 'all') filtered = events.filter(e => e.department === dept);
+studentEventGrid.innerHTML = filtered.map(ev => {
+  const modeIcon = ev.mode === 'Online' ? 'globe' : ev.mode === 'Offline' ? 'map-marker-alt' : 'wifi';
+  const modeLabel = ev.mode || 'N/A';
+  const prizeBadge = ev.prize ? `<div class="event-prize">🏆 ${escapeHtml(ev.prize)}</div>` : '';
+  const description = ev.description ? `<div class="event-description">${escapeHtml(ev.description)}</div>` : '';
+  
+  const chips = [
+    ev.mode ? `<span class="info-chip"><i class="fas fa-${modeIcon}"></i> ${escapeHtml(modeLabel)}</span>` : '',
+    ev.event_date ? `<span class="info-chip"><i class="fas fa-calendar"></i> ${escapeHtml(ev.event_date)}</span>` : '',
+    ev.registration_deadline ? `<span class="info-chip"><i class="fas fa-hourglass-end"></i> ${escapeHtml(ev.registration_deadline)}</span>` : '',
+    ev.team_size ? `<span class="info-chip"><i class="fas fa-users"></i> ${escapeHtml(ev.team_size)}</span>` : '',
+    ev.venue ? `<span class="info-chip"><i class="fas fa-map-pin"></i> ${escapeHtml(ev.venue)}</span>` : '',
+    ev.organizer ? `<span class="info-chip"><i class="fas fa-building"></i> ${escapeHtml(ev.organizer)}</span>` : '',
+  ].filter(Boolean).join('');
 
-  if (filtered.length === 0) {
-    studentEventGrid.innerHTML = '';
-    studentEmptyMessage.classList.remove('hidden');
-    return;
-  }
+  return `
+    <div class="event-card">
+      <span class="event-badge"><i class="fas fa-${getDeptIcon(ev.department)}"></i> ${escapeHtml(ev.department)} · ${deptNames[ev.department]||ev.department}</span>
+      <div class="event-name">${escapeHtml(ev.name)}</div>
+      ${prizeBadge}
+      ${description}
+      ${chips ? `<div class="event-extra-info">${chips}</div>` : ''}
+      <a href="${escapeHtml(ev.link)}" target="_blank" rel="noopener noreferrer" class="event-link-btn">
+        <i class="fas fa-external-link-alt"></i> Register Now
+      </a>
+    </div>
+  `;
+}).join('');
   studentEmptyMessage.classList.add('hidden');
 
   const deptNames = { CSE:'Computer Science', IT:'Information Tech', ECE:'Electronics', EEE:'Electrical', MECH:'Mechanical', CIVIL:'Civil', AI:'AI & Data Science' };
