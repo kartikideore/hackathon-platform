@@ -157,12 +157,23 @@
           </div>
           <button type="submit" class="btn-primary"><i class="fas fa-plus-circle"></i> Add event</button>
         </form>
-        <table class="event-table">
-          <thead>
-            <tr><th>Event</th><th>Department</th><th>Link</th><th>Action</th></tr>
-          </thead>
-          <tbody id="adminEventTableBody"></tbody>
-        </table>
+       <div style="overflow-x:auto;">
+  <table class="event-table">
+    <thead>
+      <tr>
+        <th>Event</th>
+        <th>Dept</th>
+        <th>Mode</th>
+        <th>Prize</th>
+        <th>Date</th>
+        <th>Deadline</th>
+        <th>Link</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="adminEventTableBody"></tbody>
+  </table>
+</div>
         <div id="adminEmptyMessage" class="empty-message hidden" style="margin-top:20px;">
           <i class="fas fa-inbox"></i> No events added yet.
         </div>
