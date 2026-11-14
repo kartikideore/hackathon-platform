@@ -77,24 +77,80 @@
           </div>
           <div class="admin-badge"><i class="fas fa-check-circle"></i> <span id="adminName">Admin</span></div>
         </div>
-        <form id="addEventForm" class="admin-form">
-          <div class="form-group">
-            <label>Event name</label>
-            <input type="text" id="eventNameInput" placeholder="e.g. CodeSprint 2025" required>
-          </div>
-          <div class="form-group">
-            <label>Department</label>
-            <select id="eventDeptInput" required>
-              <option value="All">All</option>
-              <option value="CSE">CSE</option>
-              <option value="IT">IT</option>
-              <option value="ECE">ECE</option>
-              <option value="EEE">EEE</option>
-              <option value="MECH">MECH</option>
-              <option value="CIVIL">CIVIL</option>
-              <option value="AI">AI & DS</option>
-            </select>
-          </div>
+        <form id="addEventForm" class="admin-form-full">
+  <div class="form-row">
+    <div class="form-group">
+      <label>Event name *</label>
+      <input type="text" id="eventNameInput" placeholder="e.g. Smart India Hackathon" required>
+    </div>
+    <div class="form-group">
+      <label>Department *</label>
+      <select id="eventDeptInput" required>
+        <option value="CSE">CSE</option>
+        <option value="IT">IT</option>
+        <option value="ECE">ECE</option>
+        <option value="EEE">EEE</option>
+        <option value="MECH">MECH</option>
+        <option value="CIVIL">CIVIL</option>
+        <option value="AI">AI & DS</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Mode *</label>
+      <select id="eventModeInput" required>
+        <option value="Online">Online</option>
+        <option value="Offline">Offline</option>
+        <option value="Hybrid">Hybrid</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label>Prize Pool</label>
+      <input type="text" id="eventPrizeInput" placeholder="e.g. ₹50,000 or $5,000">
+    </div>
+    <div class="form-group">
+      <label>Event Date</label>
+      <input type="text" id="eventDateInput" placeholder="e.g. 15 Dec 2026">
+    </div>
+    <div class="form-group">
+      <label>Registration Deadline</label>
+      <input type="text" id="eventDeadlineInput" placeholder="e.g. 10 Dec 2026">
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label>Team Size</label>
+      <input type="text" id="eventTeamInput" placeholder="e.g. 2-4 members">
+    </div>
+    <div class="form-group">
+      <label>Venue (if offline)</label>
+      <input type="text" id="eventVenueInput" placeholder="e.g. IIT Delhi">
+    </div>
+    <div class="form-group">
+      <label>Organizer</label>
+      <input type="text" id="eventOrganizerInput" placeholder="e.g. Devfolio">
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group full-width">
+      <label>Short Description</label>
+      <textarea id="eventDescInput" rows="2" placeholder="One or two lines about the hackathon"></textarea>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group full-width">
+      <label>Registration Link *</label>
+      <input type="url" id="eventLinkInput" placeholder="https://..." required>
+    </div>
+  </div>
+
+  <button type="submit" class="btn-primary"><i class="fas fa-plus-circle"></i> Add Event</button>
+</form>
           <div class="form-group">
             <label>Event link</label>
             <input type="url" id="eventLinkInput" placeholder="https://..." required>
