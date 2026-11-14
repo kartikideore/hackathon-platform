@@ -18,5 +18,11 @@ class Event(Base):
     link = Column(String, nullable=False)
     description = Column(Text, nullable=True)
     event_date = Column(String, nullable=True)
+    prize = Column(String, nullable=True)
+    mode = Column(String, nullable=True)          # Online / Offline / Hybrid
+    venue = Column(String, nullable=True)
+    registration_deadline = Column(String, nullable=True)
+    team_size = Column(String, nullable=True)
+    organizer = Column(String, nullable=True)
     created_by = Column(Integer, ForeignKey("admins.id", ondelete="SET NULL"), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
