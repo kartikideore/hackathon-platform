@@ -23,6 +23,12 @@ class EventBase(BaseModel):
     link: str
     description: Optional[str] = None
     event_date: Optional[str] = None
+    prize: Optional[str] = None
+    mode: Optional[str] = None
+    venue: Optional[str] = None
+    registration_deadline: Optional[str] = None
+    team_size: Optional[str] = None
+    organizer: Optional[str] = None
 
 class EventCreate(EventBase):
     pass
