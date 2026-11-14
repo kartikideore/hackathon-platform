@@ -220,6 +220,27 @@
           </div>
           <div class="admin-badge"><i class="fas fa-check-circle"></i> <span id="adminName">Admin</span></div>
         </div>
+        <div style="margin-top:3rem;">
+  <div class="section-title" style="font-size:1.4rem;">
+    <i class="fas fa-check-double" style="color:#4facfe;"></i> Pending Project Approvals
+  </div>
+  <div class="section-sub" style="margin-bottom:1rem;">Verify GitHub links and approve to make them public.</div>
+  
+  <div id="pendingProjectsList" class="admin-list"></div>
+  <div id="noPendingProjects" class="empty-message hidden" style="margin-top:1rem;">
+    <i class="fas fa-inbox"></i> No pending projects.
+  </div>
+</div>
+
+<div style="margin-top:2rem;">
+  <div class="section-title" style="font-size:1.4rem;">
+    <i class="fas fa-envelope-open-text" style="color:#4facfe;"></i> Project Join Requests
+  </div>
+  <div id="adminRequestsList" class="admin-list"></div>
+  <div id="noAdminRequests" class="empty-message hidden" style="margin-top:1rem;">
+    <i class="fas fa-inbox"></i> No join requests yet.
+  </div>
+</div>
         <form id="addEventForm" class="admin-form-full">
   <div class="form-row">
     <div class="form-group">
