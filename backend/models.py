@@ -21,7 +21,7 @@ class Event(Base):
     description = Column(Text, nullable=True)
     event_date = Column(String, nullable=True)
     prize = Column(String, nullable=True)
-    mode = Column(String, nullable=True)          # Online / Offline / Hybrid
+    mode = Column(String, nullable=True)
     venue = Column(String, nullable=True)
     registration_deadline = Column(String, nullable=True)
     team_size = Column(String, nullable=True)
@@ -43,8 +43,8 @@ class Project(Base):
     what_done = Column(Text, nullable=True)
     what_left = Column(Text, nullable=True)
     roles_needed = Column(Text, nullable=True)
-    progress = Column(Integer, default=0)          # 0-100 percent
-    status = Column(String, default="pending")     # pending / approved / rejected
+    progress = Column(Integer, default=0)
+    status = Column(String, default="pending")
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
 
@@ -55,5 +55,5 @@ class ProjectRequest(Base):
     requester_name = Column(String, nullable=False)
     requester_email = Column(String, nullable=False)
     message = Column(Text, nullable=True)
-    status = Column(String, default="pending")     # pending / approved / rejected
+    status = Column(String, default="pending")
     created_at = Column(DateTime(timezone=True), server_default=func.now())
