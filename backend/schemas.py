@@ -2,20 +2,33 @@ from pydantic import BaseModel, EmailStr
 from typing import Optional
 from datetime import datetime
 
+
+# ============================================================
+# ADMIN
+# ============================================================
+
 class AdminLogin(BaseModel):
     email: EmailStr
     password: str
+
 
 class AdminOut(BaseModel):
     id: int
     name: str
     email: EmailStr
+
     class Config:
         from_attributes = True
+
 
 class TokenResponse(BaseModel):
     token: str
     admin: AdminOut
+
+
+# ============================================================
+# EVENT
+# ============================================================
 
 class EventBase(BaseModel):
     name: str
@@ -29,6 +42,38 @@ class EventBase(BaseModel):
     registration_deadline: Optional[str] = None
     team_size: Optional[str] = None
     organizer: Optional[str] = None
+
+
+class EventCreate(EventBase):
+    pass
+
+
+class EventUpdate(BaseModel):
+    name: Optional[str] = None
+    department: Optional[str] = None
+    link: Optional[str] = None
+    description: Optional[str] = None
+    event_date: Optional[str] = None
+    prize: Optional[str] = None
+    mode: Optional[str] = None
+    venue: Optional[str] = None
+    registration_deadline: Optional[str] = None
+    team_size: Optional[str] = None
+    organizer: Optional[str] = None
+
+
+class EventOut(EventBase):
+    id: int
+    created_at: Optional[datetime] = None
+
+    class Config:
+        from_attributes = True
+
+
+# ============================================================
+# PROJECT
+# ============================================================
+
 class ProjectCreate(BaseModel):
     title: str
     owner_name: str
@@ -52,6 +97,10 @@ class ProjectOut(ProjectCreate):
         from_attributes = True
 
 
+# ============================================================
+# PROJECT REQUEST
+# ============================================================
+
 class ProjectRequestCreate(BaseModel):
     project_id: int
     requester_name: str
@@ -66,20 +115,3 @@ class ProjectRequestOut(ProjectRequestCreate):
 
     class Config:
         from_attributes = True
-
-class EventCreate(EventBase):
-    pass
-
-class EventUpdate(BaseModel):
-    name: Optional[str] = None
-    department: Optional[str] = None
-    link: Optional[str] = None
-    description: Optional[str] = None
-    event_date: Optional[str] = None
-
-class EventOut(EventBase):
-    id: int
-    created_at: Optional[datetime] = None
-    class Config:
-        from_attributes = True
-        
