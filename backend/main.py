@@ -61,6 +61,28 @@ seed_admin()
 # ============================================================
 app = FastAPI(title="HackTrack API", version="2.0.0")
 
+@app.get("/api/debug")
+def debug(db: Session = Depends(get_db)):
+    import traceback
+    try:
+        from sqlalchemy import inspect
+        inspector = inspect(engine)
+        tables = inspector.get_table_names()
+        project_count = db.query(Project).count()
+        return {
+            "status": "ok",
+            "tables": tables,
+            "project_table_exists": "projects" in tables,
+            "project_count": project_count,
+            "db_file_exists": os.path.exists(_db_path),
+        }
+    except Exception as e:
+        return {
+            "error_type": type(e).__name__,
+            "error_message": str(e),
+            "traceback": traceback.format_exc()
+        }
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
