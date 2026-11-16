@@ -212,13 +212,21 @@ def create_project(payload: ProjectCreate, db: Session = Depends(get_db)):
     db.refresh(project)
     return project
 
-
 @app.get("/api/projects", response_model=list[ProjectOut])
 def list_projects(department: str | None = Query(None), db: Session = Depends(get_db)):
-    q = db.query(Project).filter(Project.status == "approved")
-    if department and department != "all":
-        q = q.filter(Project.department == department)
-    return q.order_by(Project.created_at.desc()).all()
+    import traceback
+    try:
+        q = db.query(Project).filter(Project.status == "approved")
+        if department and department != "all":
+            q = q.filter(Project.department == department)
+        result = q.order_by(Project.created_at.desc()).all()
+        return result
+    except Exception as e:
+        print("=== ERROR in list_projects ===")
+        print(f"Error type: {type(e).__name__}")
+        print(f"Error message: {str(e)}")
+        print(traceback.format_exc())
+        raise HTTPException(status_code=500, detail=f"{type(e).__name__}: {str(e)}")
 
 
 @app.get("/api/admin/projects", response_model=list[ProjectOut])
