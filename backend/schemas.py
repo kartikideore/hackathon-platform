@@ -15,7 +15,7 @@ class AdminLogin(BaseModel):
 class AdminOut(BaseModel):
     id: int
     name: str
-    email: EmailStr
+    email: str
 
     class Config:
         from_attributes = True
@@ -77,7 +77,7 @@ class EventOut(EventBase):
 class ProjectCreate(BaseModel):
     title: str
     owner_name: str
-    owner_email: EmailStr
+    owner_email: str
     team_name: Optional[str] = None
     github_link: str
     department: str
@@ -104,7 +104,7 @@ class ProjectOut(ProjectCreate):
 class ProjectRequestCreate(BaseModel):
     project_id: int
     requester_name: str
-    requester_email: EmailStr
+    requester_email: str
     message: Optional[str] = None
 
 
