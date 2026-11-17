@@ -22,15 +22,14 @@ from auth import (
 load_dotenv()
 
 # ============================================================
-# ============================================================
-# DATABASE SETUP — Create tables if they don't exist
+# DATABASE SETUP — Create tables if they don't exist (safe)
 # ============================================================
 Base.metadata.create_all(bind=engine)
 print("[DB] Database ready")
 
 
 # ============================================================
-# SEED ADMIN
+# SEED ADMIN (only if no admin exists)
 # ============================================================
 def seed_admin():
     db = SessionLocal()
@@ -42,7 +41,7 @@ def seed_admin():
             admin = Admin(name=name, email=email, password=hash_password(password))
             db.add(admin)
             db.commit()
-            print(f"[OK] Default admin created: {email} / {password}")
+            print(f"[OK] Default admin created: {email}")
     finally:
         db.close()
 
@@ -65,50 +64,25 @@ app.add_middleware(
 
 
 # ============================================================
-# DEBUG ENDPOINT (useful for future testing)
+# DEBUG
 # ============================================================
 @app.get("/api/debug")
 def debug(db: Session = Depends(get_db)):
-    try:
-        from sqlalchemy import inspect
-        inspector = inspect(engine)
-        tables = inspector.get_table_names()
-
-        # Try each model query to see which fails
-        results = {}
-        try:
-            results["admin_count"] = db.query(Admin).count()
-        except Exception as e:
-            results["admin_error"] = f"{type(e).__name__}: {str(e)}"
-        try:
-            results["event_count"] = db.query(Event).count()
-        except Exception as e:
-            results["event_error"] = f"{type(e).__name__}: {str(e)}"
-        try:
-            results["project_count"] = db.query(Project).count()
-        except Exception as e:
-            results["project_error"] = f"{type(e).__name__}: {str(e)}"
-        try:
-            results["request_count"] = db.query(ProjectRequest).count()
-        except Exception as e:
-            results["request_error"] = f"{type(e).__name__}: {str(e)}"
-
-        return {
-            "status": "ok",
-            "tables": tables,
-            "db_file_exists": os.path.exists(_db_path),
-            "counts": results,
-        }
-    except Exception as e:
-        return {
-            "error_type": type(e).__name__,
-            "error_message": str(e),
-            "traceback": traceback.format_exc(),
-        }
+    from sqlalchemy import inspect
+    inspector = inspect(engine)
+    tables = inspector.get_table_names()
+    return {
+        "status": "ok",
+        "tables": tables,
+        "event_count": db.query(Event).count(),
+        "project_count": db.query(Project).count(),
+        "admin_count": db.query(Admin).count(),
+        "db_url_prefix": engine.url.drivername,
+    }
 
 
 # ============================================================
-# AUTH ROUTES
+# AUTH
 # ============================================================
 @app.post("/api/auth/login", response_model=TokenResponse)
 def login(payload: AdminLogin, db: Session = Depends(get_db)):
@@ -204,7 +178,7 @@ def delete_event(
 
 
 # ============================================================
-# PROJECTS — LIST (with try/except for debugging)
+# PROJECTS
 # ============================================================
 @app.get("/api/projects", response_model=list[ProjectOut])
 def list_projects(department: str | None = Query(None), db: Session = Depends(get_db)):
@@ -212,20 +186,12 @@ def list_projects(department: str | None = Query(None), db: Session = Depends(ge
         q = db.query(Project).filter(Project.status == "approved")
         if department and department != "all":
             q = q.filter(Project.department == department)
-        result = q.order_by(Project.created_at.desc()).all()
-        return result
+        return q.order_by(Project.created_at.desc()).all()
     except Exception as e:
-        print("=== ERROR in list_projects ===")
         print(traceback.format_exc())
-        raise HTTPException(
-            status_code=500,
-            detail=f"list_projects {type(e).__name__}: {str(e)}",
-        )
+        raise HTTPException(status_code=500, detail=f"{type(e).__name__}: {str(e)}")
 
 
-# ============================================================
-# PROJECTS — CREATE (with try/except for debugging)
-# ============================================================
 @app.post("/api/projects", response_model=ProjectOut, status_code=201)
 def create_project(payload: ProjectCreate, db: Session = Depends(get_db)):
     try:
@@ -249,36 +215,18 @@ def create_project(payload: ProjectCreate, db: Session = Depends(get_db)):
         return project
     except Exception as e:
         db.rollback()
-        print("=== ERROR in create_project ===")
         print(traceback.format_exc())
-        raise HTTPException(
-            status_code=500,
-            detail=f"create_project {type(e).__name__}: {str(e)}",
-        )
+        raise HTTPException(status_code=500, detail=f"{type(e).__name__}: {str(e)}")
 
 
-# ============================================================
-# PROJECTS — ADMIN LIST
-# ============================================================
 @app.get("/api/admin/projects", response_model=list[ProjectOut])
 def admin_list_projects(
     current: Admin = Depends(get_current_admin),
     db: Session = Depends(get_db),
 ):
-    try:
-        return db.query(Project).order_by(Project.created_at.desc()).all()
-    except Exception as e:
-        print("=== ERROR in admin_list_projects ===")
-        print(traceback.format_exc())
-        raise HTTPException(
-            status_code=500,
-            detail=f"admin_list_projects {type(e).__name__}: {str(e)}",
-        )
+    return db.query(Project).order_by(Project.created_at.desc()).all()
 
 
-# ============================================================
-# PROJECTS — APPROVE
-# ============================================================
 @app.put("/api/admin/projects/{project_id}/approve", response_model=ProjectOut)
 def approve_project(
     project_id: int,
@@ -294,9 +242,6 @@ def approve_project(
     return project
 
 
-# ============================================================
-# PROJECTS — REJECT
-# ============================================================
 @app.put("/api/admin/projects/{project_id}/reject", response_model=ProjectOut)
 def reject_project(
     project_id: int,
@@ -312,9 +257,6 @@ def reject_project(
     return project
 
 
-# ============================================================
-# PROJECTS — DELETE
-# ============================================================
 @app.delete("/api/admin/projects/{project_id}")
 def delete_project(
     project_id: int,
@@ -330,43 +272,29 @@ def delete_project(
 
 
 # ============================================================
-# PROJECT REQUESTS — CREATE (with try/except)
+# PROJECT REQUESTS
 # ============================================================
 @app.post("/api/project-requests", response_model=ProjectRequestOut, status_code=201)
 def create_project_request(payload: ProjectRequestCreate, db: Session = Depends(get_db)):
-    try:
-        project = db.query(Project).filter(Project.id == payload.project_id).first()
-        if not project:
-            raise HTTPException(status_code=404, detail="Project not found")
-        if project.status != "approved":
-            raise HTTPException(status_code=400, detail="Project is not approved yet")
+    project = db.query(Project).filter(Project.id == payload.project_id).first()
+    if not project:
+        raise HTTPException(status_code=404, detail="Project not found")
+    if project.status != "approved":
+        raise HTTPException(status_code=400, detail="Project is not approved yet")
 
-        req = ProjectRequest(
-            project_id=payload.project_id,
-            requester_name=payload.requester_name,
-            requester_email=payload.requester_email,
-            message=payload.message,
-            status="pending",
-        )
-        db.add(req)
-        db.commit()
-        db.refresh(req)
-        return req
-    except HTTPException:
-        raise
-    except Exception as e:
-        db.rollback()
-        print("=== ERROR in create_project_request ===")
-        print(traceback.format_exc())
-        raise HTTPException(
-            status_code=500,
-            detail=f"create_project_request {type(e).__name__}: {str(e)}",
-        )
+    req = ProjectRequest(
+        project_id=payload.project_id,
+        requester_name=payload.requester_name,
+        requester_email=payload.requester_email,
+        message=payload.message,
+        status="pending",
+    )
+    db.add(req)
+    db.commit()
+    db.refresh(req)
+    return req
 
 
-# ============================================================
-# PROJECT REQUESTS — LIST PER PROJECT
-# ============================================================
 @app.get("/api/projects/{project_id}/requests", response_model=list[ProjectRequestOut])
 def list_project_requests(project_id: int, db: Session = Depends(get_db)):
     return db.query(ProjectRequest).filter(
@@ -374,28 +302,14 @@ def list_project_requests(project_id: int, db: Session = Depends(get_db)):
     ).all()
 
 
-# ============================================================
-# PROJECT REQUESTS — ADMIN LIST
-# ============================================================
 @app.get("/api/admin/project-requests", response_model=list[ProjectRequestOut])
 def admin_list_requests(
     current: Admin = Depends(get_current_admin),
     db: Session = Depends(get_db),
 ):
-    try:
-        return db.query(ProjectRequest).order_by(ProjectRequest.created_at.desc()).all()
-    except Exception as e:
-        print("=== ERROR in admin_list_requests ===")
-        print(traceback.format_exc())
-        raise HTTPException(
-            status_code=500,
-            detail=f"admin_list_requests {type(e).__name__}: {str(e)}",
-        )
+    return db.query(ProjectRequest).order_by(ProjectRequest.created_at.desc()).all()
 
 
-# ============================================================
-# PROJECT REQUESTS — APPROVE
-# ============================================================
 @app.put("/api/admin/project-requests/{req_id}/approve", response_model=ProjectRequestOut)
 def approve_request(
     req_id: int,
@@ -411,9 +325,6 @@ def approve_request(
     return req
 
 
-# ============================================================
-# PROJECT REQUESTS — REJECT
-# ============================================================
 @app.put("/api/admin/project-requests/{req_id}/reject", response_model=ProjectRequestOut)
 def reject_request(
     req_id: int,
