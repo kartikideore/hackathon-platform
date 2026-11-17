@@ -22,18 +22,11 @@ from auth import (
 load_dotenv()
 
 # ============================================================
-# DATABASE SETUP — Force fresh DB on startup
 # ============================================================
-_db_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "hackathon.db")
-if os.path.exists(_db_path):
-    try:
-        os.remove(_db_path)
-        print("[DB] Removed old database file")
-    except Exception as e:
-        print(f"[DB] Could not remove old DB: {e}")
-
+# DATABASE SETUP — Create tables if they don't exist
+# ============================================================
 Base.metadata.create_all(bind=engine)
-print("[DB] All tables created")
+print("[DB] Database ready")
 
 
 # ============================================================
